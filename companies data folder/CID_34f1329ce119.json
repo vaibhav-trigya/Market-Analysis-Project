@@ -1,0 +1,46 @@
+{
+  "combined_id": "CID_34f1329ce119",
+  "base_company": {
+    "partner_id": "ext_bb4be6fa7cee",
+    "name": "Trigya Innovations"
+  },
+  "competitors": [
+    {
+      "partner_id": "ext_59cdcae9c5b0",
+      "name": "Zoho Premium partner Bangalore",
+      "relationship": {
+        "type": "competitor",
+        "parent_company": "Trigya Innovations",
+        "folder_path": "Trigya_Innovations/competitors/Zoho_Premium_Partner_Bangalore"
+      }
+    },
+    {
+      "partner_id": "ext_0359661ce353",
+      "name": "https://www.v-align.in/",
+      "relationship": {
+        "type": "competitor",
+        "parent_company": "Trigya Innovations",
+        "folder_path": "Trigya_Innovations/competitors/V_Align_In"
+      }
+    },
+    {
+      "partner_id": "ext_f61ad5911cd1",
+      "name": "Chennai India",
+      "relationship": {
+        "type": "competitor",
+        "parent_company": "Trigya Innovations",
+        "folder_path": "Trigya_Innovations/competitors/Chennai_India"
+      }
+    },
+    {
+      "partner_id": "ext_3a4e4ea79250",
+      "name": "CodeRack",
+      "relationship": {
+        "type": "competitor",
+        "parent_company": "Trigya Innovations",
+        "folder_path": "Trigya_Innovations/competitors/Coderack"
+      }
+    }
+  ],
+  "last_updated": "2026-05-12 11:37:46"
+}

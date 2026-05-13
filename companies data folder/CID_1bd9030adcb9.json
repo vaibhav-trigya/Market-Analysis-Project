@@ -1,0 +1,19 @@
+{
+  "combined_id": "CID_1bd9030adcb9",
+  "base_company": {
+    "partner_id": "ext_235c660ac116",
+    "name": "Hero MotoCorp"
+  },
+  "competitors": [
+    {
+      "partner_id": "ext_5ab5ffe7cef0",
+      "name": "Honda",
+      "relationship": {
+        "type": "competitor",
+        "parent_company": "Hero MotoCorp",
+        "folder_path": "Hero_Motocorp/competitors/Honda"
+      }
+    }
+  ],
+  "last_updated": "2026-05-11 16:37:00"
+}

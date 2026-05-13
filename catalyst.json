@@ -1,0 +1,21 @@
+{
+  "appsail": [
+    {
+      "source": "docker://vaibhavsaini709/scrapper-agent-v2:latest",
+      "name": "Scrapper-Agent",
+      "env_variables": {
+        "GEMINI_API_KEY": "AIzaSyAQhOc08ru7xoYE-aQlh_KaKWIl5H-TeOc",
+        "SCRAPER_API_KEY": "company_scraper_8829_x92",
+        "REPORT_API_KEY": "company_report_4410_z11",
+        "SYNC_API_KEY": "company_sync_1102_v99",
+        "ZOHO_CLIENT_ID": "1000.S4UP3226EYHCGYSNF9J2OHC3ATLXMI",
+        "ZOHO_CLIENT_SECRET": "22861b6b17c8a89a9542404bd107f747cf70e69b65",
+        "ZOHO_REFRESH_TOKEN": "1000.ead769ed1048b02db7c805d9f14f3682.6c662053228b6edc5d3586302733431c",
+        "PROJECT_ID": "39634000000012090",
+        "CATALYST_ENVIRONMENT": "Development",
+        "STRATUS_BUCKET": "test-scrapper",
+        "STRATUS_FOLDER": "scraped_data"
+      }
+    }
+  ]
+}

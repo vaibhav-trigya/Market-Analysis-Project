@@ -1,0 +1,10 @@
+[
+  {
+    "record_id": 1,
+    "base_company_name": "Shrinkmaster",
+    "competition_input_data": "{\"baseCompany\": {\"name\": \"Shrinkmaster\", \"scrapeUrl\": \"https://shrinkmaster.co.nz/\"}, \"competitors\": [{\"name\": \"Checking your browser...\", \"scrapeUrl\": \"https://shrinkkings.com/\"}, {\"name\": \"Shrink-Wrap\", \"scrapeUrl\": \"https://shrink-wrap.co.nz/\"}, {\"name\": \"Shrink Kings\", \"scrapeUrl\": \"https://shrinkkings.com/\"}, {\"name\": \"Wrapid Man\", \"scrapeUrl\": \"https://wrapidman.nz/\"}]}",
+    "s3_scrapped_url": "{\"base\": \"scraped_data/Shrinkmaster_ext_7014bcf001af.json\", \"competitors\": [\"scraped_data/Checking_Your_Browser_ext_4c1b4b59f9cf.json\", \"scraped_data/Shrink-Wrap_ext_117fed004127.json\", \"scraped_data/Shrink_Kings_ext_4c1b4b59f9cf.json\", \"scraped_data/Wrapid_Man_ext_02cc34ee89fa.json\"]}",
+    "status_final_report_url": "[\"strategic reports/Shrinkmaster_Analysis.pdf\", \"strategic reports/Shrinkmaster_Analysis_06-05-2026_175453.pdf\", \"strategic reports/Shrinkmaster_Analysis_07-05-2026_112058.pdf\"]",
+    "created_at": "2026-05-08 09:33:18"
+  }
+]

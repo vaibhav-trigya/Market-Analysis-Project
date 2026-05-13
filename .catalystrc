@@ -1,0 +1,30 @@
+{
+  "defaults": {
+    "project": 1,
+    "env": 1
+  },
+  "actives": {
+    "project": 1,
+    "env": 1
+  },
+  "projects": [
+    {
+      "idx": 1,
+      "id": "39634000000012090",
+      "name": "Scrapper-Agent",
+      "domain": {
+        "id": "50041716687",
+        "name": "scrapper-agent-60070821911.development"
+      },
+      "timezone": "Asia/Kolkata",
+      "env": [
+        {
+          "idx": 1,
+          "id": "60070821911",
+          "name": "Development",
+          "type": 3
+        }
+      ]
+    }
+  ]
+}

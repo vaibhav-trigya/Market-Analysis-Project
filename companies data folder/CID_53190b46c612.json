@@ -1,0 +1,46 @@
+{
+  "combined_id": "CID_53190b46c612",
+  "base_company": {
+    "partner_id": "ext_117fed004127",
+    "name": "Shrink Wrap"
+  },
+  "competitors": [
+    {
+      "partner_id": "ext_7014bcf001af",
+      "name": "Shrinkmaster",
+      "relationship": {
+        "type": "competitor",
+        "parent_company": "Shrink Wrap",
+        "folder_path": "Shrink_Wrap/competitors/Shrinkmaster"
+      }
+    },
+    {
+      "partner_id": "ext_4c1b4b59f9cf",
+      "name": "Shrink Kings",
+      "relationship": {
+        "type": "competitor",
+        "parent_company": "Shrink Wrap",
+        "folder_path": "Shrink_Wrap/competitors/Shrink_Kings"
+      }
+    },
+    {
+      "partner_id": "ext_7564b928a95c",
+      "name": "Shrink Wrap Auckland",
+      "relationship": {
+        "type": "competitor",
+        "parent_company": "Shrink Wrap",
+        "folder_path": "Shrink_Wrap/competitors/Shrink_Wrap_Auckland"
+      }
+    },
+    {
+      "partner_id": "ext_4d31baa38f9f",
+      "name": "Hit Wrap LTD",
+      "relationship": {
+        "type": "competitor",
+        "parent_company": "Shrink Wrap",
+        "folder_path": "Shrink_Wrap/competitors/Hit_Wrap_Ltd"
+      }
+    }
+  ],
+  "last_updated": "2026-05-11 16:34:42"
+}

@@ -1,0 +1,30 @@
+.env
+.env.*
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+bin/
+lib/
+include/
+.venv/
+build/
+dist/
+*.egg-info/
+
+# Local Data and Logs
+scraped_data/
+trigya report/
+*.log
+*.png
+logo.webp
+temp_scraper_dl.pdf
+
+# IDEs
+.vscode/
+.idea/
+.DS_Store
