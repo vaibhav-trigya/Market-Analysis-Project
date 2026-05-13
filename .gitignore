@@ -16,15 +16,30 @@ build/
 dist/
 *.egg-info/
 
+# Catalyst and Deployment
+catalyst.json
+.catalystrc
+catalyst-debug.log
+*.zip
+*.bat
+*.exe
+
 # Local Data and Logs
 scraped_data/
+strategic reports/
+companies data folder/
 trigya report/
+partner_collections/
 *.log
+*.csv
 *.png
-logo.webp
+*.webp
+*.html
+*.pdf
 temp_scraper_dl.pdf
 
 # IDEs
 .vscode/
 .idea/
 .DS_Store
+.gemini/
