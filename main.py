@@ -496,7 +496,7 @@ def main():
             agent._launch(pw)
             try:
                 print("[*] Establishing Zoho session context...", file=sys.stderr)
-                agent.page.goto(PARTNER_LIST_URL, wait_until="networkidle", timeout=60000)
+                agent.page.goto(PARTNER_LIST_URL, wait_until="load", timeout=40000)
                 agent.page.wait_for_timeout(3000)
                 
                 for i, target in enumerate(targets):

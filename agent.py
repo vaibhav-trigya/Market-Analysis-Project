@@ -78,7 +78,7 @@ class MarketIntelligenceAgent:
             user_agent=(
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
                 "AppleWebKit/537.36 (KHTML, like Gecko) "
-                "Chrome/122.0.0.0 Safari/537.36"
+                "Chrome/124.0.0.0 Safari/537.36"
             ),
             viewport={"width": 1920, "height": 1080},
             ignore_https_errors=True,
@@ -111,36 +111,46 @@ class MarketIntelligenceAgent:
             window.chrome = { runtime: {} };
         """)
 
-    def _safe_goto(self, url: str, timeout: int = 40000, wait_until: str = "domcontentloaded"):
+    def _safe_goto(self, url: str, timeout: int = 40000, wait_until: str = "commit"):
         """Attempt to navigate with retry logic and browser context recovery."""
         import time
         import random
 
-        for attempt in range(3): # Increased to 3 attempts
+        # Use 'commit' as default for faster initial handshake on slow sites
+        current_wait = wait_until 
+        
+        for attempt in range(3):
             try:
-                time.sleep(random.uniform(1.0, 2.0))
-                return self.page.goto(url, wait_until=wait_until, timeout=60000)
+                time.sleep(random.uniform(0.5, 1.5))
+                # Explicit timeout from argument or default
+                return self.page.goto(url, wait_until=current_wait, timeout=timeout)
             except Exception as e:
                 err_msg = str(e).lower()
                 
-                # SPECIAL HANDLING FOR ERR_ABORTED (Firewall/Bot Block)
-                # If we get aborted on a deep link, we try the "Homepage Handshake"
-                if "net::err_aborted" in err_msg and attempt < 2:
+                # SPECIAL HANDLING: Hangs or Connection Reset
+                if ("timeout" in err_msg or "net::err_aborted" in err_msg) and attempt < 2:
                     try:
                         parsed = urlparse(url)
                         base_domain = f"{parsed.scheme}://{parsed.netloc}/"
-                        print(f"[*] Connection aborted for deep link. Attempting 'Human Handshake' via root: {base_domain}", file=sys.stderr)
                         
-                        # 1. Visit root first to establish cookies/session
+                        # 1. If we are already at root, just try a different wait state
+                        if url.rstrip("/") == base_domain.rstrip("/"):
+                            print(f"[*] Root domain timeout. Switching to lenient wait...", file=sys.stderr)
+                            current_wait = "commit"
+                            timeout = 45000
+                            continue
+                            
+                        print(f"[*] Navigation hang/abort for {url}. Attempting Root Handshake: {base_domain}", file=sys.stderr)
+                        
+                        # Visit root first to establish cookies/session
                         self.page.goto(base_domain, wait_until="commit", timeout=20000)
                         
-                        # Mimic human activity: scroll slightly then wait
-                        self.page.mouse.wheel(0, 500)
-                        time.sleep(random.uniform(1.0, 2.0)) 
-                        self.page.mouse.wheel(0, -200)
+                        # Mimic human activity
+                        self.page.mouse.wheel(0, 300)
+                        time.sleep(1)
                         
-                        print(f"[*] Handshake complete. Proceeding to retry {url}...", file=sys.stderr)
-                        # No return here - let the loop continue to the next attempt which will hit the deep link
+                        print(f"[*] Handshake established. Retrying target URL...", file=sys.stderr)
+                        current_wait = "commit" # Be lenient on the retry
                     except Exception as he:
                         print(f"[*] Handshake failed: {he}", file=sys.stderr)
                         pass 
@@ -149,49 +159,41 @@ class MarketIntelligenceAgent:
                     print(f"[*] Attempt {attempt+1} failed for {url}: {e}", file=sys.stderr)
 
                 is_protocol_err = "protocol_error" in err_msg or "http2" in err_msg
-                
-                # Detect dead browser context
                 is_dead_context = "context or browser has been closed" in err_msg or "target page" in err_msg
 
                 if is_protocol_err or is_dead_context:
-                    print(f"[!] Critical error detected ({'Protocol' if is_protocol_err else 'Dead Context'}). Attempting context recovery...", file=sys.stderr)
+                    print(f"[!] Critical error detected. Attempting context recovery...", file=sys.stderr)
                     try:
-                        # Create a fresh context WITHOUT the problematic extra_http_headers if it's a protocol error
                         context_args = {
-                            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/124.0.0.0",
+                            "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
                             "viewport": {"width": 1920, "height": 1080},
                             "ignore_https_errors": True,
                         }
-                        
-                        # Only include standard headers for protocol error retries to avoid HTTP/2 mismatches
                         if not is_protocol_err:
-                            context_args["extra_http_headers"] = {
-                                "Accept-Language": "en-US,en;q=0.9",
-                                "Upgrade-Insecure-Requests": "1"
-                            }
+                            context_args["extra_http_headers"] = {"Accept-Language": "en-US,en;q=0.9"}
 
                         context = self.browser.new_context(**context_args)
                         self.page = context.new_page()
                         self.page.set_default_timeout(30000)
                         self.page.set_default_navigation_timeout(40000)
                         
-                        # Use a more lenient wait state for the recovery attempt
-                        print(f"[+] Context recovered. Retrying {url} with lenient wait...", file=sys.stderr)
                         return self.page.goto(url, wait_until="commit", timeout=40000)
                     except Exception as recovery_err:
                         print(f"[-] Context recovery failed: {recovery_err}", file=sys.stderr)
                         if attempt == 2: return None
                         continue
 
+                # Final fallback: wait state progression
                 if attempt == 0:
-                    print(f"[*] Retrying {url} with lenient 'commit' wait...", file=sys.stderr)
-                    wait_until = "commit"
+                    current_wait = "commit"
+                    timeout = 60000
                 elif attempt == 1:
-                    print(f"[*] Retrying {url} with extended timeout...", file=sys.stderr)
-                    wait_until = "commit"
+                    current_wait = "commit"
+                    timeout = 80000
                 else:
                     return None
         return None
+
 
     def _close(self):
         if self.browser:
@@ -270,7 +272,7 @@ class MarketIntelligenceAgent:
                     print(f"[+] Found language switcher: {selector}. Switching to English...", file=sys.stderr)
                     el.click()
                     # Wait for navigation to finish AND network to settle
-                    self.page.wait_for_load_state("networkidle", timeout=15000)
+                    self.page.wait_for_load_state("networkidle", timeout=5000)
                     self.page.wait_for_timeout(3000) # Safety buffer for JS rendering
                     return True
             except Exception:
