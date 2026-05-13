@@ -181,4 +181,4 @@ ScrapperAgent can push intelligence to remote databases in real-time via webhook
 ```
 
 ---
-*Created with ❤️ by the Intelligence Engineering Team.*
+*Created by the AI-ML Developer Team.*
