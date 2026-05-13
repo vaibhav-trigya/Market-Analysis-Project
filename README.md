@@ -1,223 +1,184 @@
 # 🤖 ScrapperAgent — Zoho Partner Strategic Intelligence
 
-A high-performance competitive intelligence engine designed to scrape, analyze, and benchmark Zoho Partners. It combines **Playwright-driven deep extraction** with **Google Gemini 2.5 Flash Reasoning** to generate boardroom-ready executive reports and real-time performance indices.
+A premium, enterprise-grade competitive intelligence engine designed to scrape, analyze, and benchmark the Zoho Partner ecosystem. By combining **Playwright-driven deep extraction** with **Google Gemini 2.5 Flash Reasoning**, ScrapperAgent generates boardroom-ready executive reports and real-time performance indices.
 
 ---
 
-## 🏗️ Project File Logic & Architecture
+## 🏗️ Intelligence Pipeline & Workflow
 
-The system is built on a decoupled, modular framework that separates raw data orchestration from AI synthesis. Here is how each file functions and the logic it builds:
+The system follows a modular "Search-SENSE-Synthesize" architecture to transform raw web data into actionable market intelligence.
 
-### 🌐 **`dashboard.py`** (The Strategic Hub)
-*   **Work:** Serves as the web-based command center for the entire system.
-*   **Logic:** Uses a Flask-based backend to bridge the Python scraping logic with a modern HTML/JS interface. It handles real-time status updates via AJAX, manages the "Is Competitor" mapping UI, and provides a direct visual link to generated PDF reports.
-
-### 🎮 **`main.py`** (The Orchestration Core)
-*   **Work:** The primary entry point for Command Line (CLI) operations.
-*   **Logic:** It coordinates high-level workflows. It parses user arguments, initializes the browser session, and decides whether to perform a single scrape, a bulk sync, or a strategic report generation. It acts as the "glue" that connects the scraper to the analyzer and storage.
-
-### 🧭 **`agent.py`** (The Navigator)
-*   **Work:** Manages the browser lifecycle using Playwright.
-*   **Logic:** It builds the "human-like" navigation patterns. It handles SSL certificate bypasses, manages timeouts, and performs intelligent link discovery (like finding social media links and clicking through Zoho profile tabs). It provides the platform for `extractors.py` to work on.
-
-### 🕵️ **`extractors.py`** (The Deep Scraper Intelligence)
-*   **Work:** Performs the actual data extraction and DOM analysis.
-*   **Logic:** This is the most complex logic file. It uses keyword-based heuristics (`BLOG_URL_KW`, `CASE_TEXT_KW`) to distinguish between different types of content. It features a "cleaner" logic that strips away navigation bars, footers, and ads to extract only the high-value text from articles and case studies.
-
-### 🧠 **`analyzer.py`** (The AI Brain)
-*   **Work:** Translates raw data into strategic intelligence using LLMs (Google Gemini).
-*   **Logic:** It builds the "Strategic Reasoning" layer. It takes the messy text from `extractors.py` and summarizes it into executive points. It also builds the logic for the **Competitive Benchmarking Matrix**, comparing multiple companies side-by-side to find market gaps.
-
-### 📦 **`storage.py`** (The Insight Factory & Folder Logic)
-*   **Work:** Handles data persistence, folder structures, and PDF generation.
-*   **Logic:** 
-    *   **Competitor Nesting:** Built-in logic to detect if a company is a "competitor" and automatically nest it inside its parent company's folder.
-    *   **SPI Calculation:** Quantifies "Technical Depth" and "Customer Success" scores into numerical values.
-    *   **PDF Rendering:** A complex rendering engine that uses `fpdf2` and `matplotlib` to build professional, dark-themed reports with dynamic charts.
-
-### 📁 **`scraped_data/`** (The Database)
-*   **Logic:** Automatically organized by company name. If a competitor is mapped, the logic inside `storage.py` ensures it is saved as: `scraped_data > [Parent_Company] > competitors > [Scraped_Company]`.
+```mermaid
+graph TD
+    %% Input Layer
+    User([User Request]) --> Dashboard[Intelligence Dashboard]
+    User --> CLI[CLI / API Trigger]
+    
+    %% Orchestration Layer
+    Dashboard & CLI --> Orchestrator[Main Orchestrator]
+    
+    %% Extraction Layer
+    subgraph "SENSE: Deep Data Extraction"
+        Orchestrator --> Agent[Market Intelligence Agent]
+        Agent --> Browser[Playwright Browser Engine]
+        Browser --> Zoho[Zoho Partner Profile]
+        Browser --> Website[Official Brand Website]
+        Browser --> Social[Social Platforms]
+        
+        Website --> Extractors[Deep Extractors]
+        Extractors --> |Keyword Heuristics| Blogs[Blog Content]
+        Extractors --> |DOM Discovery| CaseStudies[Case Studies]
+        Extractors --> |Page Crawler| Services[Service Capabilities]
+    end
+    
+    %% AI Analysis Layer
+    subgraph "SYNTHESIZE: AI Reasoning (Gemini)"
+        Blogs & CaseStudies & Services --> Analyzer[Partner AI Analyzer]
+        Analyzer --> |Content Summary| Summaries[Strategic Summaries]
+        Analyzer --> |Capability Mapping| SPI[Strategic Performance Index]
+        Analyzer --> |Competitive Radar| Benchmarks[Market Benchmarks]
+    end
+    
+    %% Output Layer
+    subgraph "ACT: Insight Delivery"
+        Summaries & SPI & Benchmarks --> Storage[Insight Factory]
+        Storage --> |fpdf2 + Matplotlib| PDF[Executive PDF Report]
+        Storage --> |JSON/CSV| DataStore[Catalyst DataStore Sync]
+        Storage --> |Real-time| UI[Live Dashboard Update]
+    end
+```
 
 ---
 
-## 📖 Report Analysis Methodology
+## 🧩 Modular Architecture
 
-The ScrapperAgent doesn't just collect data; it synthesizes it using a structured analytical framework. Each section of the **Executive Strategic Report** is generated based on specific data points and AI reasoning:
+The engine is built on a decoupled framework that separates raw data orchestration from AI synthesis:
 
-| Report Section | Basis of Analysis | Analytical Framework |
+| Module | Purpose | Core Logic |
 | :--- | :--- | :--- |
-| **1. Executive Summary** | Synthesis of all scraped content (Blogs, Case Studies, Overview). | Market Battle Framing: Identifies who is leading and why. |
-| **2. Scoring Methodology** | Raw counts of high-value assets + AI content audit. | **Weighted Index**: Tech (30%), Proof (25%), Reach (20%), Trust (15%), Velocity (10%). |
-| **3. Detailed Profile** | Deep-scrape of "About Us", "Services", and "Company Overview" tabs. | **Strategic Context**: Summarizes core competencies and brand positioning. |
-| **4. GTM Strategy Comparison** | Analysis of service delivery models and lead generation signals. | **Comparative Analysis**: Channel strategy (Partners vs Direct), Inbound/Outbound, and Ecosystem Leverage. |
-| **5. Competitive Cohort** | Mapping of all entities into strategic groups. | **Battle Narrative**: Framing the "war" (e.g., Specialization vs. Ecosystem Scale). |
-| **6. Performance Index** | Cumulative calculation of Technical Depth, Success, and Reach. | **Cumulative Benchmarking**: Ranks partners against the baseline. |
-| **7. Strategic Radar** | Intersection of technical capabilities (from case studies) and market reach. | **Capability Mapping**: Visualizes the "shape" of a company's market presence. |
-| **8. Gap Analysis** | Delta calculation between baseline metrics and competitor leaders. | **Vulnerability Audit**: Quantifies where the baseline is losing "Market Friction". |
-| **9. Strategic Roadmap** | Backwards-induction from identified gaps. | **Growth Modeling**: 12-month path (Q1-Q4) with specific milestones and tasks. |
+| **`dashboard.py`** | **The Strategic Hub** | Flask-based web command center. Manages real-time status, competitor mapping, and report visual links. |
+| **`main.py`** | **The Orchestration Core** | Primary CLI entry point. Coordinates high-level workflows (Scrape, Sync, or Report Generation). |
+| **`agent.py`** | **The Navigator** | Manages the Playwright browser lifecycle. Implements "human-like" navigation patterns and SSL bypasses. |
+| **`extractors.py`**| **Deep Scraper Intelligence** | Complex DOM analysis. Strips "noise" (nav, footers) to extract high-value text using keyword heuristics. |
+| **`analyzer.py`** | **The AI Brain** | Translates raw text into intelligence via **Google Gemini**. Powers the Strategic Reasoning and Gap Analysis layers. |
+| **`storage.py`**  | **The Insight Factory** | Handles data persistence, SPI calculation (Numerical Benchmarking), and complex PDF rendering with Matplotlib. |
+
+---
+
+## 📊 Strategic Performance Index (SPI)
+
+ScrapperAgent quantifies market authority on a **0-100 scale** using a weighted multi-dimensional index:
+
+*   **Technical Depth (40 pts)**: Calculated via blog volume, content sophistication, and technical keyword density.
+*   **Customer Success (45 pts)**: Measured by the density and quality of verified Case Studies and Customer Stories.
+*   **Market Authority (15 pts)**: Based on cross-platform social media footprint (LinkedIn, X, Instagram, Facebook).
 
 ---
 
 ## 🚀 Key Innovations
 
-### 📊 Strategic Performance Index (SPI)
-Unlike basic scrapers, ScrapperAgent quantifies market authority on a **0-100 scale** using a weighted multi-dimensional index:
--   **Technical Depth (40 pts)**: Analyzed through blog volume and content sophistication.
--   **Customer Success (45 pts)**: Measured by the density and quality of Case Studies/Customer Stories.
--   **Market Authority (15 pts)**: Based on social media footprint across LinkedIn, X, Instagram, and Facebook.
+### 🧠 AI-Driven Discovery
+Uses LLMs to "find" hidden Blog and Case Study listing pages that traditional scrapers miss due to complex menus or shadow DOMs.
 
-### 🌐 Intelligence Dashboard
-A centralized web portal (`http://127.0.0.1:5000`) that allows leadership to:
--   **Bulk Sync**: Refresh the entire partner ecosystem database in one click.
--   **Real-time Progress**: Monitor scraping cycles with "Estimated Time Remaining" indicators.
--   **Report History**: Instant access to an archive of executive-level PDF reports.
+### 🔄 Relationship-Aware Discovery
+The system understands the **Parent-Competitor hierarchy**.
+*   **Logical Nesting**: Automatically organizes data into `Parent > Competitors > Sub-Company` structures.
+*   **360° Reports**: Analyzing a single competitor automatically pulls in its Parent and Peers for a complete market context.
 
-### 🧠 Advanced Content Scoping
--   **CMS-Specific Extractors**: Specialized logic for Zoho Sites, WordPress (Elementor/Divi), and custom SPAs.
--   **AI-Driven Discovery**: Uses Google Gemini to "find" the Blog and Case Study listing pages even when links are hidden behind complex menus.
--   **Social Intelligence**: Bypasses login walls to capture brand voice and engagement snippets from social profiles.
+### 🛡️ Bot Resilience
+Implemented "Human Handshake" navigation flows to bypass firewall blocks and net-aborted errors, ensuring high-fidelity extraction from enterprise websites.
 
 ---
 
-## 🛠️ Setup & Deployment
+## 📖 Report Analysis Methodology
 
-### 1. Environment Configuration
-Install the required engine components:
+The **Executive Strategic Report** is a 10-section deep dive into a company's market position:
+
+| Section | Basis of Analysis | Framework |
+| :--- | :--- | :--- |
+| **Executive Summary** | Full Content Synthesis | **Battle Framing**: Identifies market leaders and challengers. |
+| **Scoring Matrix** | Asset Counts + AI Audit | **Weighted SPI**: Tech (30%), Proof (25%), Reach (20%), Trust (15%). |
+| **GTM Strategy** | Service Delivery Models | **Comparative Analysis**: Channel strategy and ecosystem leverage. |
+| **Strategic Radar** | Capability Intersection | **Radar Charts**: Visualizes the "shape" of market presence. |
+| **Gap Analysis** | Delta Calculation | **Vulnerability Audit**: Where the baseline is losing friction. |
+| **Strategic Roadmap**| Backwards-Induction | **Growth Modeling**: 12-month actionable path (Q1-Q4). |
+
+---
+
+## 🛠️ Quick Start
+
+### 1. Installation
 ```bash
 pip install -r requirements.txt
 playwright install chromium
 ```
 
-### 2. Strategic API Access
-Create a `.env` file in the root directory:
+### 2. Configuration
+Create a `.env` file:
 ```env
-GEMINI_API_KEY=AIzaSy...your-key-here
+GEMINI_API_KEY=your_gemini_key_here
 ```
 
----
-
-## 🕹️ Operations Guide
-
-### Option A: The Intelligence Hub (Recommended)
-Launch the web dashboard for a visual, automated experience:
+### 3. Launch
+**Visual Dashboard**:
 ```bash
 python dashboard.py
 ```
-> Access via browser at: `http://127.0.0.1:5000`
-
-### Option B: The Command Line (Power Users)
-Run targeted scrapes or bulk operations directly:
-- **Targeted Scrape**: `python main.py --partner "Partner Name"`
-- **Bulk Sync**: `python main.py --sync`
-- **Generate Bulk Report**: `python main.py --bulk`
-
----
-
-## 📁 Data Ecosystem
--   **`scraped_data/`**: Structured TXT and JSON archives for every scraped partner.
--   **`trigya report/`**: The "Gold" folder containing the final **Executive Competitive Intelligence PDFs**.
--   **`partner_collections/`**: Managed lists of partners to be processed during sync cycles.
-
----
-
-## 📡 External API Synchronization
-
-ScrapperAgent can automatically push its intelligence to your own remote database or custom API in real-time.
-
-### 1. Configuration
-To enable API sync, add your endpoint to the `.env` file:
-```env
-API_WEBHOOK_URL=https://your-api-endpoint.com/v1/receive-data
+**CLI Power User**:
+```bash
+python main.py --partner "Partner Name"   # Targeted Scrape
+python main.py --sync                     # Bulk Sync Ecosystem
+python main.py --bulk                     # Generate Full Strategic Report
 ```
 
-### 2. The JSON Payload
-When a scrape completes, the system performs a `POST` request to your URL with the following JSON structure:
+---
 
+## ☁️ Cloud Infrastructure Sync
+
+The system is fully integrated with **Zoho Catalyst** for enterprise-scale data persistence and cloud access.
+
+*   **Stratus Storage**: All generated PDF reports and scraped artifacts are automatically synced to Zoho Stratus buckets.
+*   **Catalyst DataStore**: Structured intelligence (scores, summaries, company profiles) is pushed to a relational DataStore for access by other enterprise applications.
+*   **Automated Backups**: Local data is periodically mirrored to the cloud to ensure zero data loss.
+
+---
+
+## 🚀 Cloud Deployment (Zoho Appsail)
+
+ScrapperAgent is container-ready and pre-configured for **Zoho Appsail** deployment.
+
+### 🐳 Docker Integration
+The project includes a production-ready Docker configuration. You can pull the latest image or build your own:
+```bash
+docker pull vaibhavsaini709/scrapper-agent-v2:latest
+```
+
+### ⚡ Deploy to Catalyst
+Use the Catalyst CLI to deploy the engine to the cloud:
+```bash
+catalyst deploy
+```
+*Note: Ensure your `catalyst.json` is configured with the correct `PROJECT_ID` and environment variables.*
+
+---
+
+## 📡 Remote API & Synchronization
+
+ScrapperAgent can push intelligence to remote databases in real-time via webhooks.
+
+**Example Payload**:
 ```json
 {
   "partner_id": "ext_9bef40659b58",
   "name": "Accenture",
-  "website": "https://www.accenture.com",
   "relationship": {
     "type": "competitor",
     "parent_company": "Wipro",
     "folder_path": "Wipro/competitors/Accenture"
   },
-  "overview": "Company description and mission...",
-  "blogs": [
-    { "title": "AI in 2026", "link": "...", "content": "..." }
-  ],
-  "case_studies": [],
-  "customer_stories": [],
-  "social_media": { "linkedin": "...", "twitter": "..." }
-}
-```
-
-### 3. 🔄 Circular Hierarchy Logic (360° Analysis)
-The system features a **Relationship-Aware Discovery Engine**. This means:
-*   **Logical Nesting**: The `relationship` tag tells your API exactly where the company sits in the ecosystem (Parent vs. Competitor).
-*   **Bi-Directional Reports**: 
-    *   Selecting a **Parent** (Wipro) pulls all its competitors into the report.
-    *   Selecting a **Competitor** (Accenture) automatically pulls its **Parent** (Wipro) AND its **Peers** (other siblings) into the report.
-*   **Result**: You get a complete 360° market view regardless of which company you start your analysis with.
-
----
-
-## 🛡️ Secure Trigger API (Incoming)
-
-You can trigger a scrape session remotely from any external system (like a CRM or a custom dashboard).
-
-### 1. Endpoint
-**URL**: `http://[YOUR_IP]:5000/api/trigger-scrape`  
-**Method**: `POST`  
-**Header**: `X-API-Key: [Your SCRAPER_API_KEY from .env]`
-
-### 2. Request Body (JSON)
-```json
-{
-  "partner_name": "Accenture",
-  "parent_company": "Wipro"
-}
-```
-
-### 3. Example (cURL)
-```bash
-curl -X POST http://127.0.0.1:5000/api/trigger-scrape \
-     -H "Content-Type: application/json" \
-     -H "X-API-Key: your_secret_key" \
-     -d '{"partner_name": "Accenture", "parent_company": "Wipro"}'
-```
-
-### 3. Trigger Competitive Report
-**URL**: `http://[YOUR_IP]:5000/api/trigger-report`  
-**Method**: `POST`  
-**Header**: `X-API-Key: [Your REPORT_API_KEY from .env]`
-
-**Request Body (JSON)**:
-```json
-{
-  "baseline_company": "Rotabull"
-}
-```
-
-### 4. Check Task Status (IMPORTANT)
-Triggering an API task returns a `202 Accepted` status with `"status": "RUNNING"`. This indicates the task has **started**. To check if a task is finished, poll the Status API.
-
-**URL**: `http://[YOUR_IP]:5000/api/status/[report|scrape|sync]`  
-**Method**: `GET`  
-**Header**: `X-API-Key: [Your relevant API_KEY from .env]`
-
-**Success Response (JSON)**:
-```json
-{
-  "status": "completed",
-  "message": "Task finished successfully."
+  "scores": { "tech": 85, "success": 90, "authority": 70 }
 }
 ```
 
 ---
-
-## 📝 Performance & Reliability
--   **Resilience**: Automated SSL bypass and headless execution ensure 24/7 reliability.
--   **Intelligence**: AI-driven summarization automatically translates and cleans non-english or "noisy" website content.
--   **Visual Excellence**: PDFs feature custom navy/gold branding, card-based layouts, and Matplotlib-driven market benchmarks.
+*Created with ❤️ by the Intelligence Engineering Team.*
